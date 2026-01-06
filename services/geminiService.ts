@@ -39,7 +39,7 @@ const callOpenRouter = async (prompt: string, systemInstruction: string, schema:
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        "model": "google/gemini-2.0-flash-exp:free",
+        "model": "deepseek/deepseek-chat",
         "messages": [
           { "role": "system", "content": systemInstruction },
           { "role": "user", "content": prompt }
