@@ -72,7 +72,6 @@ export const generateReplies = async (
   settings: UserSettings,
   context: MessageContext
 ): Promise<Suggestion[]> => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
   const threadText = context.thread
     .map(m => `${m.sender === 'me' ? 'Me' : 'Them'}: ${m.text}`)
