@@ -4,12 +4,14 @@ import { UserSettings, Conversation, SocialReview } from '../types';
 
 export const dataService = {
     async saveProfile(userId: string, settings: UserSettings) {
-        // First, try to get the existing profile to see if we should update or insert
-        const { data: existingProfile } = await supabase
+        // Safely get the most recent profile to avoid PGRST116 (multiple rows)
+        const { data: profiles } = await supabase
             .from('profiles')
             .select('id')
             .eq('user_id', userId)
-            .maybeSingle();
+            .order('updated_at', { ascending: false });
+
+        const existingProfile = profiles && profiles.length > 0 ? profiles[0] : null;
 
         const profileData = {
             user_id: userId,

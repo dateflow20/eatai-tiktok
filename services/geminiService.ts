@@ -141,9 +141,11 @@ LINGUISTIC INTELLIGENCE:
   } catch (error: any) {
     console.error("Gemini Error:", error);
 
+    const openRouterKey = process.env.OPENROUTER_API_KEY;
+
     // Fallback to OpenRouter if Gemini fails (e.g. 429, 500)
-    if (process.env.OPENROUTER_API_KEY) {
-      console.log("Falling back to OpenRouter...");
+    if (openRouterKey) {
+      console.log("Falling back to OpenRouter (DeepSeek)...");
       try {
         const result = await callOpenRouter(prompt, systemInstruction, null);
         return result.map((item: any, index: number) => ({
@@ -155,6 +157,8 @@ LINGUISTIC INTELLIGENCE:
         console.error("OpenRouter also failed:", orError);
         throw error; // Throw original error if fallback fails
       }
+    } else {
+      console.warn("OpenRouter API Key not found. Cannot fallback.");
     }
     throw error;
   }
