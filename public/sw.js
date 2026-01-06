@@ -1,7 +1,5 @@
 const CACHE_NAME = 'reply-v1';
 const ASSETS = [
-    '/',
-    '/index.html',
     '/manifest.json',
     '/icon-512.png',
     '/favicon.ico'

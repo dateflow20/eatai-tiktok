@@ -5,9 +5,7 @@
 [build.environment]
   SECRETS_SCAN_ENABLED = "false"
 
-# Don't redirect asset files - only HTML routes
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
-  conditions = {path = ["!*.js", "!*.css", "!*.svg", "!*.png", "!*.jpg", "!*.ico", "!*.json", "!*.woff", "!*.woff2"]}
