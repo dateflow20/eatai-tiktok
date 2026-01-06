@@ -1,0 +1,7 @@
+{
+  "name": "Reply - AI Chat Assistant",
+  "description": "A world-class AI assistant that generates 10 tailored response suggestions for your chats, stories, and social interactions using text, audio, and visual context.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
