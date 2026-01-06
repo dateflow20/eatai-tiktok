@@ -8,7 +8,7 @@ export const refineSituation = async (rawInput: string): Promise<{ situation: st
   // Initialize right before usage to ensure current environment context is captured
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const response = await ai.models.generateContent({
-    model: 'gemini-1.5-flash',
+    model: 'gemini-1.5-flash-latest',
     contents: `The user provided this raw explanation of their situation: "${rawInput}". 
     DISTILL this into:
     1. A strategic "Situation" (The background tension, context, and current state).
@@ -39,7 +39,7 @@ const callOpenRouter = async (prompt: string, systemInstruction: string, schema:
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        "model": "deepseek/deepseek-r1-0528:free",
+        "model": "deepseek/deepseek-r1:free",
         "messages": [
           { "role": "system", "content": systemInstruction },
           { "role": "user", "content": prompt }
@@ -107,7 +107,7 @@ LINGUISTIC INTELLIGENCE:
 
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-1.5-flash',
+      model: 'gemini-1.5-flash-latest',
       contents: { parts: [{ text: prompt }] },
       config: {
         systemInstruction,
@@ -182,7 +182,7 @@ export const generateSocialReview = async (
   `;
 
   const response = await ai.models.generateContent({
-    model: 'gemini-1.5-flash',
+    model: 'gemini-1.5-flash-latest',
     contents: prompt,
     config: {
       systemInstruction: "Analyze dialogue velocity and social distance. Output JSON.",
@@ -214,7 +214,7 @@ export const generateTTS = async (text: string, vibe: string): Promise<string> =
   const voice = vibe.toLowerCase().includes('flirty') || vibe.toLowerCase().includes('romantic') ? 'Kore' : 'Zephyr';
 
   const response = await ai.models.generateContent({
-    model: "gemini-1.5-flash",
+    model: "gemini-1.5-flash-latest",
     contents: [{ parts: [{ text: `Say naturally in a ${vibe} vibe: ${text}` }] }],
     config: {
       responseModalities: [Modality.AUDIO],

@@ -2,9 +2,6 @@ const CACHE_NAME = 'reply-v1';
 const ASSETS = [
     '/',
     '/index.html',
-    '/index.tsx',
-    '/App.tsx',
-    '/index.css',
     '/manifest.json',
     '/icon-512.png',
     '/favicon.ico'
