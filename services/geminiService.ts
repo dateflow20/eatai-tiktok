@@ -5,10 +5,13 @@ import { UserSettings, MessageContext, Suggestion, SocialReview } from "../types
 // Always access API key via process.env.API_KEY directly to ensure the most up-to-date instance.
 
 export const refineSituation = async (rawInput: string): Promise<{ situation: string, goal: string }> => {
-  // Initialize right before usage to ensure current environment context is captured
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const apiKey = process.env.API_KEY || process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    console.error("CRITICAL ERROR: Gemini API Key is missing! Check your Netlify environment variables.");
+  }
+  const ai = new GoogleGenAI(apiKey || '');
   const response = await ai.models.generateContent({
-    model: 'gemini-1.5-flash-latest',
+    model: 'gemini-2.5-flash',
     contents: `The user provided this raw explanation of their situation: "${rawInput}". 
     DISTILL this into:
     1. A strategic "Situation" (The background tension, context, and current state).
@@ -31,11 +34,15 @@ export const refineSituation = async (rawInput: string): Promise<{ situation: st
 };
 
 const callOpenRouter = async (prompt: string, systemInstruction: string, schema: any) => {
+  const openRouterKey = process.env.OPENROUTER_API_KEY;
+  if (!openRouterKey) {
+    console.error("CRITICAL ERROR: OpenRouter API Key is missing!");
+  }
   try {
     const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
+        "Authorization": `Bearer ${openRouterKey}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
@@ -105,9 +112,12 @@ LINGUISTIC INTELLIGENCE:
     Generate 10 strategic next moves in JSON. If the conversation has Luganda, ensure the suggestions reflect that.
   `;
 
+  const apiKey = process.env.API_KEY || process.env.GEMINI_API_KEY;
+  const ai = new GoogleGenAI(apiKey || '');
+
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-1.5-flash-latest',
+      model: 'gemini-2.5-flash',
       contents: { parts: [{ text: prompt }] },
       config: {
         systemInstruction,
@@ -168,7 +178,8 @@ export const generateSocialReview = async (
   settings: UserSettings,
   context: MessageContext
 ): Promise<SocialReview> => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const apiKey = process.env.API_KEY || process.env.GEMINI_API_KEY;
+  const ai = new GoogleGenAI(apiKey || '');
   const threadText = context.thread
     .map(m => `${m.sender === 'me' ? 'Me' : 'Them'}: ${m.text}`)
     .join('\n');
@@ -182,7 +193,7 @@ export const generateSocialReview = async (
   `;
 
   const response = await ai.models.generateContent({
-    model: 'gemini-1.5-flash-latest',
+    model: 'gemini-2.5-flash',
     contents: prompt,
     config: {
       systemInstruction: "Analyze dialogue velocity and social distance. Output JSON.",
@@ -210,11 +221,13 @@ export const generateSocialReview = async (
 };
 
 export const generateTTS = async (text: string, vibe: string): Promise<string> => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const apiKey = process.env.API_KEY || process.env.GEMINI_API_KEY;
+  const ai = new GoogleGenAI(apiKey || '');
+
   const voice = vibe.toLowerCase().includes('flirty') || vibe.toLowerCase().includes('romantic') ? 'Kore' : 'Zephyr';
 
   const response = await ai.models.generateContent({
-    model: "gemini-1.5-flash-latest",
+    model: "gemini-2.5-flash",
     contents: [{ parts: [{ text: `Say naturally in a ${vibe} vibe: ${text}` }] }],
     config: {
       responseModalities: [Modality.AUDIO],

@@ -41,6 +41,21 @@ const App: React.FC = () => {
   const [session, setSession] = useState<Session | null>(null);
 
   useEffect(() => {
+    // Health Check for Environment Variables
+    const keys = {
+      GEMINI_API_KEY: !!(process.env.API_KEY || process.env.GEMINI_API_KEY),
+      OPENROUTER_API_KEY: !!process.env.OPENROUTER_API_KEY,
+      VITE_SUPABASE_URL: !!process.env.VITE_SUPABASE_URL,
+      VITE_SUPABASE_ANON_KEY: !!process.env.VITE_SUPABASE_ANON_KEY
+    };
+
+    console.log("🚀 App Health Check (Keys Status):", keys);
+
+    const missing = Object.entries(keys).filter(([_, exists]) => !exists).map(([key]) => key);
+    if (missing.length > 0) {
+      console.error("❌ CRITICAL: Missing Environment Variables in Netlify:", missing.join(", "));
+    }
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
     });
